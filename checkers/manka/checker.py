@@ -44,16 +44,31 @@ class C4llChecker(BaseChecker):
         pass
 
     def get(self, flag_id: str, flag: str, vuln: str):
-        key, password = flag_id.split(":")
+        try:
+            key, password = flag_id.split(":")
+        except ValueError:
+            self.cquit(Status.CORRUPT)
         try:
             conn = connect(self.host, port, timeout=self.timeout)
-        except PwnlibException:
+        except PwnlibException as e:
+            print(e)
+            self.cquit(Status.DOWN)
+        except Exception as e:
+            print(e)
             self.cquit(Status.DOWN)
         try:
             stored_flag = get_flag(conn, key, password)
-        except EOFError:
+        except EOFError as e:
+            print(e)
             self.cquit(Status.CORRUPT)
+        except (UnicodeDecodeError, TimeoutError) as e:
+            print(e)
+            self.cquit(Status.CORRUPT)
+        except Exception as e:
+            print(e)
+            self.cquit(Status.MUMBLE)
         if stored_flag != flag:
+            print("penis")
             self.cquit(Status.CORRUPT)
         self.cquit(Status.OK)
 

